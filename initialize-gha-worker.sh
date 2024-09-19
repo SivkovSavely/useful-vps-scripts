@@ -44,11 +44,10 @@ cd "actions-runner-$1"
 
 echo -e "RUNNER_ALLOW_RUNASROOT=1\n$(cat ./config.sh)" > ./config.sh
 
-echo -n "Enter github repo url: "
-read -r GITHUB_REPO_URL
-
-echo -n "Enter token: "
-read -r GITHUB_RUNNER_TOKEN
+echo -n "Enter line with a url and a token: "
+read -r GITHUB_RUNNER_CONFIG_LINE
+GITHUB_REPO_URL=$(echo $GITHUB_RUNNER_CONFIG_LINE | grep -E -o "\-\-url .+ \-\-token" - | tail -c +7 | head -c -9)
+GITHUB_REPO_URL=$(echo $GITHUB_RUNNER_CONFIG_LINE | grep -E -o "\-\-token .+" - | tail -c +9)
 
 echo "Running ./config.sh --url $GITHUB_REPO_URL --token $GITHUB_RUNNER_TOKEN"
 ./config.sh --url $GITHUB_REPO_URL --token $GITHUB_RUNNER_TOKEN
